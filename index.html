@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blackjack Calculator</title>
+<link rel="manifest" href="manifest.json" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: radial-gradient(circle at center, #1a1a1a, #000000);
+    color: #ffb347;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    user-select: none;
+  }
+
+  header {
+    text-align: center;
+    padding: 15px 0;
+    background: #111;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+  }
+
+  h1 {
+    font-size: 2.2rem;
+    margin: 0;
+  }
+
+  main {
+    flex: 1;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .section-title {
+    font-size: 1.3rem;
+    margin: 15px 0 10px 0;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #fff;
+    border-bottom: 2px solid #ffb347;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+  }
+
+  #playerCards, #dealerCard {
+    font-size: 1.2rem;
+    margin: 8px 0 15px 0;
+    color: #fff;
+    min-height: 1.5em;
+  }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 10px;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 25px;
+  }
+
+    .all-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 2fr));
+    gap: 10px;
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 25px;
+  }
+
+  .card-btn {
+    background: linear-gradient(145deg, #2f2f2f, #1c1c1c);
+    border: 2px solid #ffb347;
+    border-radius: 10px;
+    color: #ffb347;
+    font-size: 1.6rem;
+    padding: 16px 0;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+    transition: all 0.25s ease;
+  }
+
+  .card-btn:active {
+    transform: scale(0.92);
+    background: #ffb347;
+    color: #111;
+  }
+
+  .action-bar {
+    position: sticky;
+    bottom: 0;
+    background: #111;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.7);
+  }
+
+  .action-btn {
+    background: #333;
+    border: 1px solid #777;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    padding: 10px 14px;
+    font-weight: 500;
+    flex: 0;
+    margin: 0 auto;
+    transition: background 0.3s ease;
+  }
+
+  .action-btn:active {
+    background: #444;
+  }
+
+  .result {
+    font-size: 2rem;
+    font-weight: 900;
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 12px;
+    min-height: 3em;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    background-color: rgba(255, 215, 0, 0.1);
+    border: 2px solid #ffb347;
+  }
+  /* Mobile (Standard) */
+  body {
+    font-size: 14px;
+  }
+  .card-grid {
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  }
+  .action-btn {
+    font-size: 1.2rem;
+    padding: 12px;
+  }
+  
+  .hit { background-color: #27ae60; color: #fff; }
+  .stand { background-color: #e74c3c; color: #fff; }
+  .double { background-color: #f1c40f; color: #fff; }
+  .split { background-color: #2980b9; color: #111; }
+
+  /* Tablet */
+  @media (min-width: 768px) {
+    body {
+      font-size: 16px;
+    }
+    .card-grid {
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    }
+    .action-btn {
+      font-size: 1.3rem;
+      padding: 14px;
+    }
+  }
+
+/* Desktop Optimierung */
+@media (min-width: 1024px) {
+  body {
+    font-size: 18px;
+  }
+  main {
+    max-width: 1600px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 2fr 1.5fr;
+    gap: 50px;
+    align-items: start;
+  }
+  .all-grid {
+    display: block;
+    max-width: 1000px;
+  }
+  .result {
+    font-size: 2.4rem;
+    max-width: 100%;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-btn{
+    min-width: 70px;
+  }
+  .card-grid {
+    grid-template-columns: repeat(6, 1fr);
+    min-width: 600px;
+  }
+  .action-btn {
+    font-size: 1.6rem;
+    padding: 18px;
+  }
+  .section-title {
+    font-size: 1.5rem;
+  }
+  #playerCards, #dealerCard {
+    font-size: 1.4rem;
+  }
+
+</style>
+</head>
+<body>
+<header>
+  <h1>Blackjack Calculator</h1>
+</header>
+
+<main>
+  <div class="all-grid">
+  <div class="section-title">Deine Karten</div>
+  <div id="playerCards">Noch keine Karten</div>
+  <div class="card-grid">
+    <div class="card-btn" onclick="addCard('2')">2</div>
+    <div class="card-btn" onclick="addCard('3')">3</div>
+    <div class="card-btn" onclick="addCard('4')">4</div>
+    <div class="card-btn" onclick="addCard('5')">5</div>
+    <div class="card-btn" onclick="addCard('6')">6</div>
+    <div class="card-btn" onclick="addCard('7')">7</div>
+    <div class="card-btn" onclick="addCard('8')">8</div>
+    <div class="card-btn" onclick="addCard('9')">9</div>
+    <div class="card-btn" onclick="addCard('10')">10</div>
+    <div class="card-btn" onclick="addCard('J')">J</div>
+    <div class="card-btn" onclick="addCard('Q')">Q</div>
+    <div class="card-btn" onclick="addCard('K')">K</div>
+    <div class="card-btn" onclick="addCard('A')">A</div>
+  </div>
+
+  <div class="section-title">Dealer Karte</div>
+  <div id="dealerCard">Noch keine Dealer-Karte gewählt</div>
+  <div class="card-grid">
+    <div class="card-btn" onclick="setDealer('2')">2</div>
+    <div class="card-btn" onclick="setDealer('3')">3</div>
+    <div class="card-btn" onclick="setDealer('4')">4</div>
+    <div class="card-btn" onclick="setDealer('5')">5</div>
+    <div class="card-btn" onclick="setDealer('6')">6</div>
+    <div class="card-btn" onclick="setDealer('7')">7</div>
+    <div class="card-btn" onclick="setDealer('8')">8</div>
+    <div class="card-btn" onclick="setDealer('9')">9</div>
+    <div class="card-btn" onclick="setDealer('10')">10</div>
+    <div class="card-btn" onclick="setDealer('A')">A</div>
+  </div>
+</div>
+
+  <div id="result" class="result"></div>
+</main>
+
+<div class="action-bar">
+  <button class="action-btn" onclick="resetCards()">Reset</button>
+</div>
+
+<script>
+let playerCards = [];
+let dealerCard = '';
+
+function addCard(card) {
+  if(playerCards.length < 2) {
+    playerCards.push(card);
+    document.getElementById('playerCards').innerText = "Deine Karten: " + playerCards.join(", ");
+  }
+  // Automatische Berechnung, wenn 2 Spielerkarten und Dealer-Karte vorhanden
+  if(playerCards.length === 2 && dealerCard) {
+    calculate();
+  }
+}
+
+function setDealer(card) {
+  dealerCard = card;
+  document.getElementById('dealerCard').innerText = "Dealer Karte: " + card;
+  // Automatische Berechnung, wenn 2 Spielerkarten vorhanden
+  if(playerCards.length === 2) {
+    calculate();
+  }
+}
+
+function resetCards() {
+  playerCards = [];
+  dealerCard = '';
+  document.getElementById('playerCards').innerText = "Noch keine Karten";
+  document.getElementById('dealerCard').innerText = "Noch keine Dealer-Karte gewählt";
+  document.getElementById('result').innerText = "";
+  document.getElementById('result').className = "result";
+}
+
+
+function calculate() {
+  if(playerCards.length < 2 || !dealerCard) {
+    alert("Bitte wähle 2 Spielerkarten und eine Dealer-Karte!");
+    return;
+  }
+
+  let recommendation = getBestMove(playerCards, dealerCard);
+  let resultDiv = document.getElementById('result');
+  resultDiv.innerText = recommendation.text;
+  resultDiv.className = 'result ' + recommendation.class;
+
+  if (recommendation.class === 'hit') {
+    document.addEventListener('keydown', addExtraCardHandler);
+  } else {
+    document.removeEventListener('keydown', addExtraCardHandler);
+  }
+}
+
+// Handler für Kartenhinzufügen nach "Karte"-Empfehlung
+function addExtraCardHandler(e) {
+  return; // Deaktiviert extra Karten hinzufügen
+}
+
+function getHandValue(cards) {
+  let total = 0;
+  let aceCount = 0;
+  for(let card of cards) {
+    if(card === 'A') {
+      aceCount++;
+      total += 11;
+    } else if(['J','Q','K'].includes(card)) {
+      total += 10;
+    } else {
+      total += parseInt(card);
+    }
+  }
+  while(total > 21 && aceCount > 0) {
+    total -= 10;
+    aceCount--;
+  }
+  return total;
+}
+
+function getHardValue(cards) {
+  let total = 0;
+  for(let card of cards) {
+    if(card === 'A') {
+      total += 1;
+    } else if(['J','Q','K'].includes(card)) {
+      total += 10;
+    } else {
+      total += parseInt(card);
+    }
+  }
+  return total;
+}
+
+function getBestMove(player, dealer) {
+  let total = getHandValue(player);
+  let isSoft = player.includes('A') && total <= 21 && total !== getHardValue(player);
+  let isPair = (player[0] === player[1]);
+  let dealerValue = getHandValue([dealer]);
+
+  if(isPair) {
+    if(['A','8'].includes(player[0])) return {text:'Split', class:'split'};
+    if(['10','J','Q','K'].includes(player[0])) return {text:'Passen', class:'stand'};
+    if(player[0] === '9') {
+      if([7,10,11].includes(dealerValue)) return {text:'Passen', class:'stand'};
+      return {text:'Split', class:'split'};
+    }
+    if(player[0] === '7') return dealerValue <= 7 ? {text:'Split', class:'split'} : {text:'Karte', class:'hit'};
+    if(player[0] === '6') return dealerValue <= 6 ? {text:'Split', class:'split'} : {text:'Karte', class:'hit'};
+    if(player[0] === '4') return dealerValue === 5 || dealerValue === 6 ? {text:'Split', class:'split'} : {text:'Karte', class:'hit'};
+    if(player[0] === '3' || player[0] === '2') return dealerValue <= 7 ? {text:'Split', class:'split'} : {text:'Karte', class:'hit'};
+  }
+
+  if(isSoft) {
+    if(total === 13 || total === 14) return dealerValue >= 5 && dealerValue <= 6 ? {text:'Doppelt', class:'double'} : {text:'Karte', class:'hit'};
+    if(total === 15 || total === 16) return dealerValue >= 4 && dealerValue <= 6 ? {text:'Doppelt', class:'double'} : {text:'Karte', class:'hit'};
+    if(total === 17) return dealerValue >= 3 && dealerValue <= 6 ? {text:'Doppelt', class:'double'} : {text:'Karte', class:'hit'};
+    if(total === 18) {
+      if(dealerValue >= 3 && dealerValue <= 6) return {text:'Doppelt', class:'double'};
+      if(dealerValue === 2 || dealerValue === 7 || dealerValue === 8) return {text:'Passen', class:'stand'};
+      return {text:'Karte', class:'hit'};
+    }
+    if(total >= 19) return {text:'Passen', class:'stand'};
+  }
+
+  if(total <= 8) return {text:'Karte', class:'hit'};
+  if(total === 9) return dealerValue >= 3 && dealerValue <= 6 ? {text:'Doppelt', class:'double'} : {text:'Karte', class:'hit'};
+  if(total === 10) return dealerValue <= 9 ? {text:'Doppelt', class:'double'} : {text:'Karte', class:'hit'};
+  if(total === 11) return dealerValue <= 10 ? {text:'Doppelt', class:'double'} : {text:'Karte', class:'hit'};
+  if(total === 12) return dealerValue >= 4 && dealerValue <= 6 ? {text:'Passen', class:'stand'} : {text:'Karte', class:'hit'};
+  if(total >= 13 && total <= 16) return dealerValue <= 6 ? {text:'Passen', class:'stand'} : {text:'Karte', class:'hit'};
+  return {text:'Passen', class:'stand'};
+}
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js');
+  });
+}
+
+document.addEventListener('keydown', (e) => {
+  const key = e.key.toUpperCase();
+  if(e.shiftKey && ['2','3','4','5','6','7','8','9','0','A'].includes(key)) {
+    // Dealer Karten (Shift + Taste)
+    if(key === '0') {
+      setDealer('10');
+    } else {
+      setDealer(key);
+    }
+    return;
+  }
+  if(!e.shiftKey && ['2','3','4','5','6','7','8','9','0','J','Q','K','A'].includes(key)) {
+    // Spieler Karten
+    if(key === '0') {
+      addCard('10');
+    } else {
+      addCard(key);
+    }
+    return;
+  }
+  if(e.key === 'Enter') {
+    calculate();
+  }
+  if(e.key.toLowerCase() === 'r') {
+    resetCards();
+  }
+});
+</script>
+</body>
+</html>
